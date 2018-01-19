@@ -1,0 +1,9 @@
+Classes are a template from which to creat objects. A class can contain methods that perform some function for the class.
+An object is an instance of a class, taking on it's predefined attributes. Objects can then be referenced and opperations can be applied to objects, such as toString.
+
+An attribute is just another name for a field, which is typically a constant or variable.
+Attributes are generally properties of a class.
+
+Opperations are simple pieces of logic used as methods, such as toString.
+
+Abstraction is the process of hiding some of the complexity in how inbuilt features are implemented.

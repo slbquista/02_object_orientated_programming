@@ -1,0 +1,141 @@
+---------------------------------------------------------------------------------
+  NetBeans: jdbc driver setup
+---------------------------------------------------------------------------------
+
+[1] Put/have the ojdbc7_g.jar file in a dedicated/known folder eg H:\NetBeansDB
+
+[2] Load NetBeans, click Window/Services (or press CTRL-5).
+
+[3] Right-click Databases, click New Connection
+
+[4] In the "New Connection Wizard" window, click Driver, click Oracle Thin
+    (If the ojdbc7_g.jar file is NOT listed in the Driver File(s) list, 
+	 click Add... and find/add the file).
+	
+	Click Next
+	 
+[5] In the "Customize Connection" window / Driver Name menu , 
+    pick "Oracle Thin (Service Name)".
+	
+	Use the following settings:
+	Host: 10.1.9.106
+	Port: 1521
+	Service sw2
+	User Name: <yourfirstname_all_lowercase>
+	Password: password
+	
+	Click: Test Connection  
+	(if the connection cannot be established, double-check and correct the settings)
+	
+	The JDBC URL should look like this:  jdbc:oracle:thin:@//10.1.9.106:1521/sw2
+	
+	Click Next
+
+[6] In the "Choose Database Schema" window, select the schema that has your name.
+
+    Click Next
+	
+[7] Connect to the database (server): 
+    Under Services/Databases
+    right-click the jdbc:oracle:thin:... icon 
+	click Connect...
+	
+	click Finish
+	
+[8] Expand the jdcb:... node for accessing your schema and the database objects
+    (Tables/Views/Procedures).
+	
+[9] For accessing table data: right-click a table (entry), click Execute Command ...
+    Use SQL for querying the database.
+	
+---------------------------------------------------------------------------------
+  Java: utilise database (data)
+---------------------------------------------------------------------------------	
+If the database connection  works (using the above method), it makes sense to 
+access the database via Java eg
+
+public class DeviceRecord {
+
+    // refactor, encapsulate fields
+    private int id;
+    private String macaddress;
+    private String ipaddress;
+    private String addressmode;
+    private String nodetype;
+    private String nodename;
+    private boolean online ;
+
+    public DeviceRecord() {
+        id = 0;
+        macaddress = "";
+        ipaddress = "";
+        addressmode = "";
+        nodetype = "";
+        nodename = "";
+        online = false ;
+    }
+    
+    @Override
+    public String toString(){
+        String status = "" ;
+        if (this.online)
+            status = "online" ;
+        else
+            status = "offline";
+        return this.id + " "
+                + this.macaddress + " "
+                + this.ipaddress + " "
+                + this.addressmode + " "
+                + this.nodetype + " "
+                + this.nodename + " "
+                + status;
+    }
+	
+	// accessors/mutators omitted
+}
+
+
+public class NetworkDevices {
+
+    private static ArrayList< DeviceRecord> rnd;
+
+    public NetworkDevices() throws ClassNotFoundException, SQLException {
+        try {
+		    // if we get a problem here ("driver does not exist"): 
+			// Click  the project icon / Properties / Libraries -> add (the path to) ojdbc7_g.jar
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            DriverManager.registerDriver(new oracle.jdbc.driver.OracleDriver());
+        } catch (ClassNotFoundException c_) {
+            System.out.println(c_.getMessage());
+        }
+
+        rnd = new ArrayList<>() ;
+        
+        try {
+		    // CAUTION: the connection string needs your ACTUAL user name for connecting to the database!
+			// The TABLE NAME used in the SELECT ... must be correct!  
+            Connection c = DriverManager.getConnection("jdbc:oracle:thin:@//10.1.9.106:1521/sw2", "myfirstname", "password");
+            Statement s = c.createStatement();
+            ResultSet rset = s.executeQuery("select * from nwdevices order by id");
+            while (rset.next()) {
+                DeviceRecord dr = new DeviceRecord();
+                dr.setId(rset.getInt(1));
+                dr.setMacaddress(rset.getString(2));
+                dr.setIpaddress(rset.getString(3));
+                dr.setAddressmode(rset.getString(4));
+                dr.setNodetype(rset.getString(5));
+                dr.setNodename(rset.getString(6));
+                rnd.add(dr) ;
+            }
+        } catch (SQLException s_) {
+            System.out.println(s_.getErrorCode());
+        }
+
+    }
+
+    public void displayDeviceRecords() {
+        for (DeviceRecord dr : rnd) {
+            System.out.println(dr.toString());
+        }
+    }
+}

@@ -1,0 +1,8 @@
+Just manipulating fields in an ArrayList.
+Only read data from database once, at start.
+
+Classess should just provide small functions that can be pieced together in main
+In main first create new instance of objects, then use functions on that object
+
+Turn on domain controller first as it assigns IPs
+After that turn on the router, switches and WAPs

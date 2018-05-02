@@ -1,0 +1,29 @@
+Each host class is an object. This is the framework.
+There can be multiple instances of each object!
+Pass in a unique identifier to grab the details of that device, or turn it on/off?
+
+Keep host class empty?
+
+-------------1------------
+Router
+Switch
+WAP
+-------------2-------------
+DomainControler
+FileServer
+WebServer
+DatabaseServer
+------------3--------------
+PC
+Laptop
+MobileDevice
+
+Can pass in nodeName as string from main into class, then use variable in constructor to target specific device.
+
+1 - Done
+2 - Done
+3 - Done
+4 - Done
+5 - Fairly easy, add array of port numbers per server class then output that and their state?
+6 - Hard
+7 - Done
